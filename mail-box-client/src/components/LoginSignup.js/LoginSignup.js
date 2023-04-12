@@ -2,6 +2,8 @@ import { Form, Button, Container, Row, Col, Card} from "react-bootstrap";
 import { useRef,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthantication } from "../../States/Reducers/auth-reducer";
+import { useNavigate } from "react-router-dom";
+
 
 async function loginAndSignUp(userDetails, signUpMode) {
     let url ='';
@@ -35,13 +37,14 @@ function LoginSignup() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const confirmPasswordRef = useRef("");
+  const navTo = useNavigate();
   const email = emailRef.current.value ;
   const password = passwordRef.current.value ;
 //   const confirmPassword = confirmPasswordRef.current.value ;
   const [signupMode , setSignupMode] = useState(true);
-  const auth = useSelector(state=>state.auth);
+  const auth = useSelector(state=>state.auth.userAuth);
   const dispatch = useDispatch();
-  console.log(auth);
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,9 +62,12 @@ function LoginSignup() {
     loginAndSignUp(userDetails , signupMode).then(data=>{
         console.log(data);
         if(data.registered){
-            dispatch(setAuthantication({idToken : data.idToken , isLogin:true , userID:data.localId }))
+            dispatch(setAuthantication({idToken : data.idToken , isLogin: true , userID:data.localId }))
+            localStorage.setItem('idToken' , data.idToken)
+            localStorage.setItem('userID' , data.localId)
+            navTo('/home');
         }else{
-            setSignupMode(true);
+            setSignupMode(false);
         }
     });
   
