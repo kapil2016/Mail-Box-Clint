@@ -1,6 +1,6 @@
 import { Form, Button, Container, Row, Col, Card} from "react-bootstrap";
 import { useRef,useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { setAuthantication } from "../../States/Reducers/auth-reducer";
 import { useNavigate } from "react-router-dom";
 
@@ -42,7 +42,7 @@ function LoginSignup() {
   const password = passwordRef.current.value ;
 //   const confirmPassword = confirmPasswordRef.current.value ;
   const [signupMode , setSignupMode] = useState(true);
-  const auth = useSelector(state=>state.auth.userAuth);
+  // const auth = useSelector(state=>state.auth.userAuth);
   const dispatch = useDispatch();
   
 
@@ -62,9 +62,10 @@ function LoginSignup() {
     loginAndSignUp(userDetails , signupMode).then(data=>{
         console.log(data);
         if(data.registered){
-            dispatch(setAuthantication({idToken : data.idToken , isLogin: true , userID:data.localId }))
+            dispatch(setAuthantication({idToken : data.idToken , isLogin: true , userID:data.localId , email:data.email}))
             localStorage.setItem('idToken' , data.idToken)
             localStorage.setItem('userID' , data.localId)
+            localStorage.setItem('email' , data.email)
             navTo('/home');
         }else{
             setSignupMode(false);

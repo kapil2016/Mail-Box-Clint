@@ -1,8 +1,20 @@
 import React from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { setAuthantication } from '../../../States/Reducers/auth-reducer';
+import { useDispatch } from 'react-redux';
+
+
 
 const Header = () => {
+ const dispatch = useDispatch();
+ const logoutHandler = ()=>{
+    dispatch(setAuthantication({idToken: null , isLogin:false, userID:null , email:null}))
+    localStorage.setItem('idToken' , null)
+    localStorage.setItem('userID' , null)
+    localStorage.setItem('email' , null)
+
+ }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -14,7 +26,7 @@ const Header = () => {
             <Nav.Link href="#about">About</Nav.Link>
             <Nav.Link href="#contact">Contact Us</Nav.Link>
           </Nav>
-          <Button variant="primary">Logout</Button>
+          <Button variant="primary" onClick={logoutHandler}>Logout</Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>

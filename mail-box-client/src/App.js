@@ -6,14 +6,16 @@ import { useSelector } from "react-redux";
 
 function App() {
   const isLogin = useSelector(state=> state.auth.userAuth.isLogin);
+  console.log(isLogin)
 
 
   return (
     <>
     <Routes>
       {!isLogin && <Route path={'/'} element={<LoginSignup></LoginSignup>}></Route>}
-      <Route path={'/home'} element={<HomePage/>}></Route>
-      <Route path={'*'} element={<HomePage/>}></Route>
+      {isLogin && <Route path={'/home'} element={<HomePage/>}></Route>}
+      {!isLogin && <Route path={'*'} element={<LoginSignup/>}></Route>}
+      {isLogin && <Route path={'*'} element={<HomePage/>}></Route>}
     </Routes>
     
 
