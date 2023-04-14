@@ -69,6 +69,7 @@ function EmailForm() {
     const reciveData = {
         reciveFrom:userEmail,
         subject: subject,
+        unRead: true ,
         content: convertToRaw(contentState).blocks[0].text,
       };
 

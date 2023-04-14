@@ -1,4 +1,4 @@
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, ListGroup } from "react-bootstrap";
 import EmailItem from "./EmailItem";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -37,8 +37,10 @@ const InboxPage = ()=>{
     const id = key ;
     const subject = recievedMailsList[key].subject ;
     const reciveFrom = recievedMailsList[key].reciveFrom ;
+    const unRead = recievedMailsList[key].unRead ;
+    const content = recievedMailsList[key].content;
     Emails.push(
-        <EmailItem key={id} id ={id} senderEmail={reciveFrom} subject={subject} ></EmailItem>
+        <EmailItem key={id} id ={id} senderEmail={reciveFrom} subject={subject} unRead={unRead} content={content} ></EmailItem>
     )
   }
 
@@ -48,7 +50,9 @@ const InboxPage = ()=>{
         <Card style={{padding:'40px' , margin:'40px'}}>
         <Card.Title> My Inbox</Card.Title>    
         <Card.Body> 
+          <ListGroup>
             {Emails} 
+          </ListGroup>
         </Card.Body>  
         </Card>
         </Container>

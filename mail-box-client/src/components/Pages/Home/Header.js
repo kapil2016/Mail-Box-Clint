@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const dispatch = useDispatch();
   const logoutHandler = () => {
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("email");
     dispatch(
       setAuthantication({
         idToken: null,
@@ -15,9 +18,7 @@ const Header = () => {
         email: null,
       })
     );
-    localStorage.removeItem("idToken");
-    localStorage.removeItem("userID");
-    localStorage.removeItem("email");
+
   };
 
   return (
