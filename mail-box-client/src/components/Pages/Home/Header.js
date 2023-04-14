@@ -39,7 +39,7 @@ const Header = () => {
               </Link>
             </Nav.Link>
             <Nav.Link>
-              <Link to="/sent-email" style={{ textDecoration: "none" }}>
+              <Link to="/inbox/sentmail" style={{ textDecoration: "none" }}>
                 Sent Email
               </Link>
             </Nav.Link>

@@ -3,11 +3,16 @@ import { ListGroup, Button } from 'react-bootstrap';
 import BlueDot from './BlueDot';
 import { useNavigate } from 'react-router-dom';
 
-function EmailItem({ senderEmail, subject, onDelete , unRead , id , content }) {
+function EmailItem({ senderEmail, subject, onDelete , unRead , id ,inbox}) {
 const navTo = useNavigate();
 
 const readMessageHandler = ()=>{
-      navTo(`/inbox/${id}`)
+  if(inbox === 'sentmails'){
+    navTo(`/inbox/sentbox/message/${id}`)
+  }else{
+    navTo(`/inbox/message/${id}`)
+  }
+      
 }
 
 
@@ -17,7 +22,9 @@ const readMessageHandler = ()=>{
       <div className="d-flex align-items-center" onClick={readMessageHandler} style={{float:'right', width:'90%', marginLeft:'20px' }}>
         {unRead && <BlueDot></BlueDot> }
         <div style={{marginLeft:'20px' }}>
-          <div>{` Received From: ${senderEmail}`}</div>
+          {inbox === 'recivedmails' && <div> Received From: {senderEmail}</div> }
+          {inbox === 'sentmails' && <div> Sent To: {senderEmail}</div> }
+          
           <div>{subject}</div>
         </div>
         

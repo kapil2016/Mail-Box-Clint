@@ -18,8 +18,11 @@ function App() {
       {isLogin && <Route path={'/compose-email'} element={<ComposeEmail/>}></Route>}
       {!isLogin && <Route path={'*'} element={<LoginSignup/>}></Route>}
       {isLogin && <Route path={'*'} element={<ComposeEmail/>}></Route>}
-      {isLogin&& <Route path="inbox" element={<InboxPage/>}></Route> }
-      <Route path="/inbox/:id" element={<ViewMessage/>}></Route>
+      {isLogin&& <Route path="/inbox" element={<InboxPage/>}></Route> }
+      {isLogin&& <Route path="/inbox/:sentmail" element={<InboxPage/>}></Route> }
+      <Route path="/inbox/message/:id" element={<ViewMessage/>}></Route>
+      <Route path="/inbox/:sentbox/message/:id" element={<ViewMessage/>}></Route>
+
     </Routes>
     
 
