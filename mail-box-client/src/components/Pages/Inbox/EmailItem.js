@@ -12,20 +12,21 @@ const readMessageHandler = ()=>{
 
 
   return (
-    <ListGroup.Item style={{ backgroundColor: '#f8f9fa', }} onClick={readMessageHandler}>
+    <ListGroup.Item style={{ backgroundColor: '#f8f9fa'}} className="d-flex align-items-center" >
    
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center" onClick={readMessageHandler} style={{float:'right', width:'90%', marginLeft:'20px' }}>
         {unRead && <BlueDot></BlueDot> }
-        <div style={{float:'right', width:'90%', marginLeft:'20px' }}>
+        <div style={{marginLeft:'20px' }}>
           <div>{` Received From: ${senderEmail}`}</div>
           <div>{subject}</div>
         </div>
-        <div  style={{float:'right', width:'90%' , textAlign:'right'}}>
-          <Button variant="danger" onClick={onDelete}>
-            Delete
-          </Button>
-        </div>
+        
       </div>
+      <div style={{ textAlign:'right'}}>
+      <Button variant="danger" onClick={()=>onDelete(id)} style={{float:'right'}}>
+        Delete
+      </Button>
+    </div>
     </ListGroup.Item>
   );
 }

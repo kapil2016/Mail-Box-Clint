@@ -22,10 +22,33 @@ async function getMails(email){
   
   }
 
+async function deleteMail(email , id){
+  let emailID = email ;
+  emailID = emailID.replace(/[.@]/g, "")
+  try {
+    const response =  await fetch(`https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/%20%20%20%20%20%20users/${emailID}/recivedmails/${id}.json`,
+    {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    if(!response.ok){
+      throw new Error('unable to delete')
+    }
+
+  } catch (error) {
+    alert(error)
+  }
+}  
+
 const InboxPage = ()=>{
   const email = useSelector(state=>state.auth.userAuth.email)
   const [recievedMailsList , setRecievedMailsList] = useState({});
+  const deleteMailHandler = (id)=>{
+     deleteMail(email ,id);
+    delete recievedMailsList[id] ;
+    setRecievedMailsList({...recievedMailsList})
 
+  }
 
   useEffect(()=>{
     getMails(email).then(data=>{
@@ -40,7 +63,7 @@ const InboxPage = ()=>{
     const unRead = recievedMailsList[key].unRead ;
     const content = recievedMailsList[key].content;
     Emails.push(
-        <EmailItem key={id} id ={id} senderEmail={reciveFrom} subject={subject} unRead={unRead} content={content} ></EmailItem>
+        <EmailItem key={id} id ={id} senderEmail={reciveFrom} subject={subject} unRead={unRead} content={content} onDelete={deleteMailHandler} ></EmailItem>
     )
   }
 
@@ -51,7 +74,7 @@ const InboxPage = ()=>{
         <Card.Title> My Inbox</Card.Title>    
         <Card.Body> 
           <ListGroup>
-            {Emails} 
+            {Emails.reverse()} 
           </ListGroup>
         </Card.Body>  
         </Card>
