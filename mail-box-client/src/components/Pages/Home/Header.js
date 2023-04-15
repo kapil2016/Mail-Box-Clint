@@ -3,9 +3,11 @@ import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { setAuthantication } from "../../../States/Reducers/auth-reducer";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const isLogin = useSelector(state=> state.auth.userAuth.isLogin);
   const logoutHandler = () => {
     localStorage.removeItem("idToken");
     localStorage.removeItem("userID");
@@ -44,9 +46,9 @@ const Header = () => {
               </Link>
             </Nav.Link>
           </Nav>
-          <Button variant="primary" onClick={logoutHandler}>
+        {isLogin &&  <Button variant="primary" onClick={logoutHandler}>
             Logout
-          </Button>
+          </Button> }
         </Navbar.Collapse>
       </Container>
     </Navbar>

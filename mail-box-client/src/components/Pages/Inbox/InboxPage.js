@@ -13,8 +13,10 @@ async function getMails(email, inbox) {
       `https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/%20%20%20%20%20%20users/${emailID}/${inbox}.json`
     );
     const data = await response.json();
-    console.log(email);
-    console.log(response);
+
+    // console.log(data);
+    // const length = Object.keys(data).length;
+    // console.log(length);
     if (!response.ok) {
       throw new Error(data.error);
     }
@@ -46,12 +48,12 @@ async function deleteMail(email, id, inbox) {
 const InboxPage = () => {
   const email = useSelector((state) => state.auth.userAuth.email);
   const [recievedMailsList, setRecievedMailsList] = useState({});
-  // const [inbox , setInbox] = useState('recivedmails');
+
   let inbox = "recivedmails";
   const param = useParams();
   if (param.sentmail === "sentmail") {
     inbox = "sentmails";
-    // setInbox("sentmails")
+
   }
 
   const deleteMailHandler = (id) => {
@@ -61,18 +63,28 @@ const InboxPage = () => {
   };
 
   useEffect(() => {
-    getMails(email, inbox).then((data) => {
-      setRecievedMailsList(data);
-    });
-  }, [email,inbox]);
+    setInterval(() => {
+      getMails(email, inbox).then((data) => {
+        setRecievedMailsList(data)
+      })
+    }, 2000);
+   console.log('effect running')
+  }, [email, inbox])
 
+  console.log('rendering')
+
+  let unreadMessageCount = 0
   const Emails = [];
   for (let key in recievedMailsList) {
     const id = key;
     const subject = recievedMailsList[key].subject;
-    const reciveFrom = inbox === "recivedmails"? recievedMailsList[key].reciveFrom:recievedMailsList[key].sentTo
+    const reciveFrom =
+      inbox === "recivedmails"
+        ? recievedMailsList[key].reciveFrom
+        : recievedMailsList[key].sentTo;
     const unRead = recievedMailsList[key].unRead;
     const content = recievedMailsList[key].content;
+    if (unRead) unreadMessageCount++;
     Emails.push(
       <EmailItem
         key={id}
@@ -91,9 +103,11 @@ const InboxPage = () => {
     <>
       <Container>
         <Card style={{ padding: "40px", margin: "40px" }}>
-        {inbox === 'recivedmails' && <Card.Title> My Inbox</Card.Title>}
-        {inbox === 'sentmails' && <Card.Title> Sent Box</Card.Title>}  
-  
+          {inbox === "recivedmails" && (
+            <Card.Title> My Inbox ( {unreadMessageCount} )</Card.Title>
+          )}
+          {inbox === "sentmails" && <Card.Title> Sent Box</Card.Title>}
+
           <Card.Body>
             <ListGroup>{Emails.reverse()}</ListGroup>
           </Card.Body>
