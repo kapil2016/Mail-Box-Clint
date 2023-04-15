@@ -14,9 +14,6 @@ async function getMails(email, inbox) {
     );
     const data = await response.json();
 
-    // console.log(data);
-    // const length = Object.keys(data).length;
-    // console.log(length);
     if (!response.ok) {
       throw new Error(data.error);
     }
@@ -63,13 +60,24 @@ const InboxPage = () => {
   };
 
   useEffect(() => {
-    setInterval(() => {
+    if( inbox === "recivedmails"){
+      const intervel =  setInterval(() => {
+        getMails(email, inbox).then((data) => {
+          setRecievedMailsList(data)
+        })
+      }, 2000)
+      return ()=> clearInterval(intervel)
+    }
+       
+  }, [email, inbox])
+
+  useEffect(()=>{
+    if( inbox === "sentmails"){
       getMails(email, inbox).then((data) => {
         setRecievedMailsList(data)
       })
-    }, 2000);
-   console.log('effect running')
-  }, [email, inbox])
+    }
+  },[email , inbox])
 
   console.log('rendering')
 
