@@ -53,10 +53,13 @@ const InboxPage = () => {
 
   }
 
-  const deleteMailHandler = (id) => {
-    deleteMail(email, id, inbox);
-    delete recievedMailsList[id];
-    setRecievedMailsList({ ...recievedMailsList });
+  const deleteMailHandler = async(id) => {
+     await deleteMail(email, id, inbox);
+    // delete recievedMailsList[id];
+    setRecievedMailsList(prev => {
+      delete prev[id] ;
+      return {...prev}
+    });
   };
 
   useEffect(() => {
