@@ -5,12 +5,12 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-async function getMails(email, inbox) {
+async function getMails(email, inbox , idToken) {
   let emailID = email;
   emailID = emailID.replace(/[.@]/g, "");
   try {
     const response = await fetch(
-      `https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/%20%20%20%20%20%20users/${emailID}/${inbox}.json`
+      `https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/users/${emailID}/${inbox}.json?auth=${idToken}`
     );
     const data = await response.json();
 
@@ -44,6 +44,8 @@ async function deleteMail(email, id, inbox) {
 
 const InboxPage = () => {
   const email = useSelector((state) => state.auth.userAuth.email);
+  const idToken = useSelector((state) => state.auth.userAuth.idToken);
+
   const [recievedMailsList, setRecievedMailsList] = useState({});
 
   let inbox = "recivedmails";
@@ -53,34 +55,34 @@ const InboxPage = () => {
 
   }
 
-  const deleteMailHandler = async(id) => {
-     await deleteMail(email, id, inbox);
+  const deleteMailHandler = async (id) => {
+    await deleteMail(email, id, inbox);
     // delete recievedMailsList[id];
     setRecievedMailsList(prev => {
-      delete prev[id] ;
-      return {...prev}
+      delete prev[id];
+      return { ...prev }
     });
   };
 
   useEffect(() => {
-    if( inbox === "recivedmails"){
-      const intervel =  setInterval(() => {
-        getMails(email, inbox).then((data) => {
+    if (inbox === "recivedmails") {
+      const intervel = setInterval(() => {
+        getMails(email, inbox , idToken).then((data) => {
           setRecievedMailsList(data)
         })
       }, 2000)
-      return ()=> clearInterval(intervel)
+      return () => clearInterval(intervel)
     }
-       
-  }, [email, inbox])
 
-  useEffect(()=>{
-    if( inbox === "sentmails"){
-      getMails(email, inbox).then((data) => {
+  }, [email, inbox , idToken])
+ console.log(email)
+  useEffect(() => {
+    if (inbox === "sentmails") {
+      getMails(email, inbox  , idToken).then((data) => {
         setRecievedMailsList(data)
       })
     }
-  },[email , inbox])
+  }, [email, inbox , idToken])
 
   console.log('rendering')
 

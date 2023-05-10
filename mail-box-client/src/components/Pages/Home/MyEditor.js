@@ -5,43 +5,48 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Form, Button, Card } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
-async function sendMail(senderId , reciverId , sentData , reciveData ,setSending){
-    setSending(true);
-    try {
-      const responseToSender = await fetch(`https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/
-      users/${senderId}/sentmails.json`,{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
+async function sendMail(senderId, reciverId, sentData, reciveData, setSending , idToken) {
+  setSending(true);
+  try {
+    const responseToSender = await fetch(
+      `https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/users/${senderId}/sentmails.json?auth=${idToken}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify(sentData)
-      })
-      await fetch(`https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/
-      users/${reciverId}/recivedmails.json`,{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(reciveData)
-      })
-      const data = await responseToSender.json();
-      if(data.error){
-        throw new Error(data.error)
+        body: JSON.stringify(sentData),
       }
-      setSending(false)
-      return data ;
-    } catch (error) {
-        alert(error)
+    );
+    await fetch(
+      `https://user-login-signup-330a7-default-rtdb.firebaseio.com/mailbox/users/${reciverId}/recivedmails.json?auth=${idToken}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reciveData),
+      }
+    );
+    const data = await responseToSender.json();
+    if (data.error) {
+      throw new Error(data.error);
     }
+    setSending(false);
+    return data;
+  } catch (error) {
+    alert(error);
+  }
 }
-
 
 function EmailForm() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
-  const [sending , setSending] = useState(false)
-  const userEmail = useSelector(state=> state.auth.userAuth.email);
+  const [sending, setSending] = useState(false);
+  const userEmail = useSelector((state) => state.auth.userAuth.email);
+  const idToken = useSelector((state) => state.auth.userAuth.idToken);
+
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
@@ -57,34 +62,43 @@ function EmailForm() {
 
   const handleSubmit = (event) => {
     const contentState = editorState.getCurrentContent();
-    let reciverEmail = to ;
+    let reciverEmail = to;
     let senderEmail = userEmail;
-    senderEmail = senderEmail.replace(/[.@]/g, "")
-    reciverEmail= reciverEmail.replace(/[.@]/g, "")
+    senderEmail = senderEmail.replace(/[.@]/g, "");
+    reciverEmail = reciverEmail.replace(/[.@]/g, "");
     const sentData = {
-      sentTo :to,  
+      sentTo: to,
       subject: subject,
       content: convertToRaw(contentState).blocks[0].text,
     };
     const reciveData = {
-        reciveFrom:userEmail,
-        subject: subject,
-        unRead: true ,
-        content: convertToRaw(contentState).blocks[0].text,
-      };
+      reciveFrom: userEmail,
+      subject: subject,
+      unRead: true,
+      content: convertToRaw(contentState).blocks[0].text,
+    };
 
-   sendMail(senderEmail , reciverEmail , sentData , reciveData ,setSending).then(data=>{
-    setEditorState(EditorState.createEmpty());
-    setTo('');
-    setSubject('')
-   })
+    sendMail(senderEmail, reciverEmail, sentData, reciveData, setSending ,idToken).then(
+      (data) => {
+        setEditorState(EditorState.createEmpty());
+        setTo("");
+        setSubject("");
+      }
+    );
   };
 
   return (
-    <Card style={{ margin:'auto' , width:'70vw' , marginTop:'30px' ,padding:'20px'}}>
+    <Card
+      style={{
+        margin: "auto",
+        width: "70vw",
+        marginTop: "30px",
+        padding: "20px",
+      }}
+    >
       <Card.Body>
         <Card.Title>Compose Email</Card.Title>
-        <Form >
+        <Form>
           <Form.Group controlId="formBasicTo">
             <Form.Label>Sent To:</Form.Label>
             <Form.Control
@@ -115,8 +129,12 @@ function EmailForm() {
         </Form>
       </Card.Body>
       <Card.Footer>
-        <Button style={{ float: "right", marginRight: "30px" }} type='submit' onClick={ handleSubmit}>
-         {sending? 'Sending...' :' Send Email'}
+        <Button
+          style={{ float: "right", marginRight: "30px" }}
+          type="submit"
+          onClick={handleSubmit}
+        >
+          {sending ? "Sending..." : " Send Email"}
         </Button>
       </Card.Footer>
     </Card>

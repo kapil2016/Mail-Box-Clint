@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-const idToken = localStorage.getItem('idToken') ? localStorage.getItem('idToken') :null ;
-const userIsLogin = !!idToken
-const userID = localStorage.getItem('userID') ? localStorage.getItem('userID') : null ;
-const email = localStorage.getItem('email') ? localStorage.getItem('email') : null ;
+const idToken = localStorage.getItem('idToken') 
+
+const userID = localStorage.getItem('userID') 
+const email = localStorage.getItem('email')
 
 
 
 const authSlice = createSlice({
     name:'auth',
-    initialState:{userAuth :{idToken: idToken , isLogin:userIsLogin , userID:userID , email:email}},
+    initialState:{userAuth :{idToken: idToken , isLogin:!!idToken, userID:userID , email:email}},
     reducers:{
         setAuthantication :(state , action)=>{
            state.userAuth = action.payload ; 
