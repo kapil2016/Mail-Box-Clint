@@ -52,7 +52,7 @@ function LoginSignup() {
       returnSecureToken: true,
     };
     if (signupMode) {
-      if (passwordInput===confirmPasswordInput) {
+      if (passwordInput!==confirmPasswordInput) {
         alert("password mismatch");
         return;
       }
